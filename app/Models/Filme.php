@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Filme extends Model
 {
@@ -10,8 +11,12 @@ class Filme extends Model
         'titulo',
         'sinopse',
         'ano',
-        'categoria',
+        'categoria_id',
         'capa',
         'link',
     ];
+
+    public function categoria(): BelongsTo{
+        return $this->belongsTo(Categoria::class);
+    }
 }

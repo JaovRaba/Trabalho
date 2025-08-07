@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\FilmesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -18,11 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('/filmes')->group(function () {
-    Route::get('/', [FilmesController::class, 'index'])->name('filme.index');
-    Route::put('/editar', [FilmesController::class, 'editar'])->name('filme.editar'); 
-    Route::get('/adicionar', [FilmesController::class, 'adicionar'])->name('filme.adicionar');
-    Route::get('/apagar/{filme}', [FilmesController::class, 'apagar'])->name('filme.apagar');
-});
+Route::resource('filmes', FilmesController::class);
+Route::resource('categorias', CategoriasController::class);
 
 require __DIR__.'/auth.php';

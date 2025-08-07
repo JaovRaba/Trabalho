@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('filme.index')" :active="request()->routeIs('filme.index')">
+                    <x-nav-link :href="route('filmes.index')" :active="request()->routeIs('filmes.index')">
                         {{ __('Filmes') }}
                     </x-nav-link>
                 </div>
