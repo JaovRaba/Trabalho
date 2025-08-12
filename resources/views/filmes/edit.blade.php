@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Filmes &raquo; Adicionar
+            Filmes &raquo; Editar
         </h2>
     </x-slot>
 
@@ -19,13 +19,14 @@
                 <div class="relative z-10 p-10">
                     <div class="text-center mb-12">
                         <h1 class="text-4xl font-bold text-gray-800 mb-3">
-                            <i class="fas fa-film text-purple-500 mr-3"></i>Adicionar Novo Filme
+                            <i class="fas fa-film text-purple-500 mr-3"></i>Editar Filme
                         </h1>
-                        <p class="text-lg text-gray-600">Preencha todos os detalhes do filme abaixo</p>
+                        <p class="text-lg text-gray-600">Atualize os detalhes do filme abaixo</p>
                     </div>
                     
-                    <form action="{{ route('filmes.store') }}" enctype="multipart/form-data" method="post" class="space-y-8">
+                    <form action="{{ route('filmes.update', $filme->id) }}" enctype="multipart/form-data" method="post" class="space-y-8">
                         @csrf
+                        @method('PUT')
                         
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -41,7 +42,7 @@
                                             type="text" 
                                             name="titulo" 
                                             placeholder="Ex: O Poderoso Chefão" 
-                                            value="{{ old('titulo') }}"
+                                            value="{{ old('titulo', $filme->titulo) }}"
                                             class="w-full px-5 py-4 pl-16 rounded-xl border border-gray-300 focus:outline-none input-focus transition-all duration-300 bg-white shadow-sm text-lg"
                                         >
                                         <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-purple-500 text-xl">
@@ -60,7 +61,7 @@
                                             name="sinopse" 
                                             placeholder="Descreva a história do filme..."
                                             class="w-full px-5 py-4 pl-16 rounded-xl border border-gray-300 focus:outline-none input-focus transition-all duration-300 bg-white shadow-sm min-h-[200px] text-lg"
-                                        >{{ old('sinopse') }}</textarea>
+                                        >{{ old('sinopse', $filme->sinopse) }}</textarea>
                                         <div class="absolute left-5 top-5 text-purple-500 text-xl">
                                             <i class="fas fa-book-open"></i>
                                         </div>
@@ -82,7 +83,7 @@
                                                 type="number" 
                                                 name="ano" 
                                                 placeholder="Ex: 1994"
-                                                value="{{ old('ano') }}"
+                                                value="{{ old('ano', $filme->ano) }}"
                                                 class="w-full px-5 py-4 pl-16 rounded-xl border border-gray-300 focus:outline-none input-focus transition-all duration-300 bg-white shadow-sm text-lg"
                                             >
                                             <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-purple-500 text-xl">
@@ -102,7 +103,9 @@
                                                 class="w-full px-5 py-4 pl-16 rounded-xl border border-gray-300 focus:outline-none input-focus transition-all duration-300 bg-white shadow-sm text-lg appearance-none"
                                             >
                                                 @foreach ($categorias as $categoria)
-                                                    <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                                                    <option value="{{ $categoria->id }}" {{ $filme->categoria_id == $categoria->id ? 'selected' : '' }}>
+                                                        {{ $categoria->nome }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-purple-500 text-xl">
@@ -120,28 +123,34 @@
                                     <label class="block text-xl text-gray-700 font-semibold mb-3">
                                         <i class="fas fa-image text-purple-500 mr-3"></i>Capa do Filme
                                     </label>
-                                    <div class="file-upload-container">
-                                        <label for="imagem" id="label_upload_arquivo" class="file-label flex flex-col items-center justify-center border-2 border-dashed border-purple-300 rounded-xl p-8 cursor-pointer bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 h-64">
-                                            <div class="file-icon text-purple-500 mb-4 transition-transform text-5xl">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                            </div>
-                                            <p class="text-gray-600 font-medium text-center text-lg">
-                                                <span class="text-purple-600 font-semibold">Clique para enviar</span><br>
-                                            </p>
-                                            <p class="text-gray-500 text-md mt-3">Formatos: JPG, PNG</p>
-                                        </label>
-                                        <input 
-                                            type="file" 
-                                            name="capa" 
-                                            id="imagem" 
-                                            accept="image/*" 
-                                            class="hidden"
-                                            onchange="atualizarNomeArquivo(this)"
-                                        >
-                                    </div>
-                                    <div id="display_nome_arquivo" class="mt-2 text-center text-green-600 font-medium hidden">
-                                        <i class="fas fa-check-circle mr-2"></i>
-                                        <span id="nome_arquivo"></span>
+                                    <div class="flex flex-col items-center">
+
+                                        <div class="mb-4 w-full flex justify-center">
+                                            <img src="{{ asset('storage/'.$filme->capa) }}" alt="Capa atual" class="max-h-48 rounded-lg border border-gray-200">
+                                        </div>
+                                        <div class="file-upload-container w-full">
+                                            <label for="imagem" id="label_upload_arquivo" class="file-label flex flex-col items-center justify-center border-2 border-dashed border-purple-300 rounded-xl p-8 cursor-pointer bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 h-64">
+                                                <div class="file-icon text-purple-500 mb-4 transition-transform text-5xl">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                </div>
+                                                <p class="text-gray-600 font-medium text-center text-lg">
+                                                    <span class="text-purple-600 font-semibold">Clique para alterar</span><br>
+                                                </p>
+                                                <p class="text-gray-500 text-md mt-3">Formatos: JPG, PNG</p>
+                                            </label>
+                                            <input 
+                                                type="file" 
+                                                name="capa" 
+                                                id="imagem" 
+                                                accept="image/*" 
+                                                class="hidden"
+                                                onchange="atualizarNomeArquivo(this)"
+                                            >
+                                        </div>
+                                        <div id="display_nome_arquivo" class="mt-2 text-center text-green-600 font-medium hidden">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            <span id="nome_arquivo"></span>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -156,7 +165,7 @@
                                             name="link" 
                                             id="link" 
                                             placeholder="Ex: https://www.youtube.com/watch?v=..."
-                                            value="{{ old('link') }}"
+                                            value="{{ old('link', $filme->link) }}"
                                             class="w-full px-5 py-4 pl-16 rounded-xl border border-gray-300 focus:outline-none input-focus transition-all duration-300 bg-white shadow-sm text-lg"
                                         >
                                         <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-purple-500 text-xl">
@@ -171,13 +180,12 @@
                         <div class="pt-10">
                             <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-5 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center text-xl">
                                 <i class="fas fa-save mr-4"></i>
-                                Salvar Filme
+                                Atualizar Filme
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
-            
         </div>
     </div>
 

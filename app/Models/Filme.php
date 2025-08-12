@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Filme extends Model
 {
@@ -14,9 +15,15 @@ class Filme extends Model
         'categoria_id',
         'capa',
         'link',
+        'status',
     ];
 
     public function categoria(): BelongsTo{
         return $this->belongsTo(Categoria::class);
     }
+
+    public function avaliacao(): BelongsTo{
+        return $this->belongsTo(Avaliacao::class);
+    }
+
 }

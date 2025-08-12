@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('filmes', function (Blueprint $table) {
+        Schema::create('avaliacoes', function (Blueprint $table) {
             $table->id();
-            $table->text('titulo');
-            $table->text('sinopse');
-            $table->integer('ano');
-            $table->text('capa')->nullable();
-            $table->text('link');
+            $table->integer('nota');
+            $table->enum('status', ['Visto', 'Quero ver' ,'Não assistido'])->default('Não assistido');
+            $table->foreignId('filme_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('filmes');
+        Schema::dropIfExists('avaliacoes');
     }
 };

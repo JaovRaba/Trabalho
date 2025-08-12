@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AvaliacoesController;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\FilmesController;
 use App\Http\Controllers\ProfileController;
@@ -21,5 +22,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('filmes', FilmesController::class);
 Route::resource('categorias', CategoriasController::class);
+Route::resource('avaliacoes', AvaliacoesController::class);
 
 require __DIR__.'/auth.php';
