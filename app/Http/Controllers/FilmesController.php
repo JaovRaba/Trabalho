@@ -60,7 +60,7 @@
                 'titulo' => 'required|min:3|max:255',
                 'sinopse' => 'required|max:255',
                 'ano'=> 'required|min:4',
-                'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'capa' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'categoria_id'=> 'required'
             ]);
 

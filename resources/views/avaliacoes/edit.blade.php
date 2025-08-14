@@ -37,7 +37,7 @@
             <br>
             <label class="block text-xl text-gray-700 font-semibold mb-3"><i class="fas fa-heading text-purple-500 mr-3"></i>Status
             </label>
-            <select name='status'>
+            <select class="w-full px-5 py-4 pl-16 rounded-xl border border-gray-300 focus:outline-none input-focus transition-all duration-300 bg-white shadow-sm text-lg" name='status'>
                 @foreach ($valores as $valor)
                     <option value="{{ $valor }}">{{ $valor }}</option>
                 @endforeach
