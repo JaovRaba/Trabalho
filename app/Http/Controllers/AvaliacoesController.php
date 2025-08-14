@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Avaliacao;
+use App\Models\Filme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -13,8 +14,10 @@ class AvaliacoesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $avaliacoes = Avaliacao::with(['filme', 'user'])->get();
+        return view('avaliacoes.index', compact('avaliacoes'));
     }
 
     /**
@@ -22,7 +25,8 @@ class AvaliacoesController extends Controller
      */
     public function create()
     {
-        //
+        $filmes = Filme::all();
+        return view('avaliacoes.create', compact('filmes'));
     }
 
     /**
@@ -30,20 +34,36 @@ class AvaliacoesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'status' => ['required', Rule::in(['Visto', 'Quero ver', 'Não assistido'])],
+            'nota'   => 'required|integer|min:0|max:5',
+            'filme_id' => 'required|exists:filmes,id',
+        ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if ($request->status === 'Visto' && $request->nota <= 0) {
+                $validator->errors()->add('nota', 'Qual é, o filme não é tão ruim assim.');
+            }
+
+            if (in_array($request->status, ['Quero ver', 'Não assistido']) && $request->nota != 0) {
+                $validator->errors()->add('nota', 'Quando o status for "Quero ver" ou "Não assistido", a nota deve ser 0.');
+            }
+        });
+
+        $data = $validator->validate();
+        
+        if (Avaliacao::where('filme_id', $data['filme_id'])->where('user_id', auth()->id())->exists()) {
+        return redirect()->back();
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        $data['user_id'] = auth()->id();
+
+        Avaliacao::create($data);
+
+        return redirect()->route('avaliacoes.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(string $id)
     {
         $avaliacao = Avaliacao::findOrFail($id);
@@ -88,6 +108,9 @@ class AvaliacoesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $avaliacao = Avaliacao::findOrFail($id);
+        $avaliacao->delete();
+
+    return redirect()->route('avaliacoes.index');
     }
 }

@@ -25,6 +25,11 @@
                         {{ __('Categorias') }}
                     </x-nav-link>
                     @endif
+                    @if(session('level') == 0)
+                    <x-nav-link :href="route('avaliacoes.index')" :active="request()->routeIs('avaliacoes.index')">
+                        {{ __('Avaliações') }}                       
+                    </x-nav-link>                    
+                    @endif                
                 </div>
             </div>
 

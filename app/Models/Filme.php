@@ -22,8 +22,9 @@ class Filme extends Model
         return $this->belongsTo(Categoria::class);
     }
 
-    public function avaliacao(): BelongsTo{
-        return $this->belongsTo(Avaliacao::class);
-    }
+public function avaliacoes()
+{
+    return $this->hasMany(Avaliacao::class);
+}
 
 }

@@ -2,5 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+.bg-gccradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
 .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }

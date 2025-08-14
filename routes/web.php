@@ -24,4 +24,5 @@ Route::resource('filmes', FilmesController::class);
 Route::resource('categorias', CategoriasController::class);
 Route::resource('avaliacoes', AvaliacoesController::class);
 
+
 require __DIR__.'/auth.php';

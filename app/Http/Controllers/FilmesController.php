@@ -13,15 +13,34 @@
         /**
          * Display a listing of the resource.
          */
-        public function index()
-        {
-            $filmes = Filme::all();
-            $categorias = Categoria::all();
-            $avaliacoes = Avaliacao::all();
+       public function index(Request $request)
+    {
+        $query = Filme::query();
+        $categorias = Categoria::all();
 
 
-            return view('filmes.index', compact('filmes', 'categorias', 'avaliacoes'));
+        if ($request->filled('ano')) {
+            $query->where('ano', $request->ano);
         }
+
+
+        if ($request->filled('categoria')) {
+            $query->where('categoria_id', $request->categoria);
+        }
+
+
+        if ($request->filled('nota')) {
+            $query->whereHas('avaliacoes', function($q) use ($request) {
+                $q->where('nota', $request->nota);
+            });
+        }
+
+        $filmes = $query->get();
+
+        return view('filmes.index', compact('filmes', 'categorias'));
+    }
+
+
 
         /**
          * Show the form for creating a new resource.

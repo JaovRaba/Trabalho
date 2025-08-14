@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categoria;
+use Illuminate\Http\Request;
 
 abstract class Controller
 {
-    public function index(){
-        $categorias = Categoria::all();
-        return view("categorias/index", ['categorias' => $categorias]);
+    public function index(Request $request){
+    
     }
 
 
